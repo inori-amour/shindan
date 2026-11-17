@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>頑張っているのに満たされない本当の理由診断</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#FAFAF7; --ink:#1C1C1A; --ink-light:#5A5A56; --ink-muted:#9A9A94; --border:#E4E2DA;
+  --c1:#D85A30; --c1-bg:#FEF3EE;
+  --c2:#BA7517; --c2-bg:#FFFBF0;
+  --c3:#1D9E75; --c3-bg:#EDFAF4;
+  --c4:#7F77DD; --c4-bg:#F2F1FE;
+  --c5:#378ADD; --c5-bg:#EEF5FD;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:'Noto Sans JP',sans-serif;font-size:15px;line-height:1.8;min-height:100vh;}
+
+/* INTRO */
+#intro{max-width:580px;margin:0 auto;padding:56px 24px 80px;text-align:center;}
+.chip{display:inline-block;font-size:11px;letter-spacing:3px;color:var(--ink-muted);border:1px solid var(--border);padding:5px 16px;border-radius:20px;margin-bottom:24px;}
+.intro-title{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:600;line-height:1.6;margin-bottom:14px;}
+.intro-sub{font-size:13px;color:var(--ink-light);line-height:2.1;margin-bottom:32px;}
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:36px;text-align:left;}
+.type-chip{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
+.type-chip span{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.btn-start{background:var(--ink);color:var(--cream);border:none;padding:16px 48px;font-size:15px;font-family:'Noto Sans JP',sans-serif;font-weight:500;border-radius:4px;cursor:pointer;letter-spacing:1px;transition:opacity .2s;}
+.btn-start:hover{opacity:.8;}
+.note{font-size:12px;color:var(--ink-muted);margin-top:12px;}
+
+/* QUIZ */
+#quiz{display:none;max-width:620px;margin:0 auto;padding:40px 24px 80px;}
+.prog-info{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-muted);margin-bottom:8px;}
+.prog-bg{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:32px;}
+.prog-fill{height:100%;border-radius:2px;background:var(--ink);transition:width .4s;}
+.layer-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:500;margin-bottom:18px;}
+.layer-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;}
+.q-no{font-size:11px;color:var(--ink-muted);letter-spacing:2px;margin-bottom:8px;}
+.q-text{font-family:'Noto Serif JP',serif;font-size:19px;line-height:1.7;margin-bottom:30px;}
+.scale-wrap{display:flex;flex-direction:column;gap:9px;margin-bottom:36px;}
+.opt{display:flex;align-items:center;gap:14px;padding:13px 18px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;background:#fff;}
+.opt:hover{border-color:var(--ink-light);}
+.opt.sel{background:var(--ink);border-color:var(--ink);color:#fff;}
+.opt-dot{width:10px;height:10px;border-radius:50%;border:2px solid currentColor;flex-shrink:0;}
+.opt.sel .opt-dot{background:#fff;}
+.opt-lbl{font-size:13px;}
+.opt-score{margin-left:auto;font-size:12px;opacity:.35;}
+.nav{display:flex;gap:12px;justify-content:flex-end;}
+.btn-back{padding:12px 28px;font-size:13px;font-family:'Noto Sans JP',sans-serif;background:transparent;border:1.5px solid var(--border);color:var(--ink-light);border-radius:4px;cursor:pointer;}
+.btn-next{padding:12px 32px;font-size:14px;font-family:'Noto Sans JP',sans-serif;background:var(--ink);border:none;color:var(--cream);font-weight:500;border-radius:4px;cursor:pointer;transition:opacity .2s;}
+.btn-next:disabled{opacity:.3;cursor:not-allowed;}
+.btn-next:not(:disabled):hover{opacity:.8;}
+
+/* RESULT */
+#result{display:none;max-width:640px;margin:0 auto;padding:40px 24px 80px;}
+.res-header{text-align:center;margin-bottom:36px;}
+.res-title{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:600;margin-bottom:6px;}
+.res-sub{font-size:12px;color:var(--ink-muted);}
+.score-section{margin-bottom:36px;}
+.score-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.score-name{font-size:12px;color:var(--ink-light);width:60px;flex-shrink:0;}
+.score-bar-bg{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+.score-val{font-size:12px;font-weight:600;width:52px;text-align:right;flex-shrink:0;}
+.type-card{border-radius:16px;padding:30px 26px;margin-bottom:22px;}
+.type-eyebrow{font-size:11px;letter-spacing:3px;opacity:.7;margin-bottom:8px;}
+.type-name{font-family:'Noto Serif JP',serif;font-size:26px;font-weight:700;margin-bottom:4px;}
+.type-eng{font-size:12px;opacity:.55;margin-bottom:22px;letter-spacing:1px;}
+.type-features h4{font-size:11px;letter-spacing:2px;opacity:.65;margin-bottom:10px;}
+.feat-list{display:flex;flex-direction:column;gap:6px;margin-bottom:22px;}
+.feat-item{font-size:13px;display:flex;align-items:flex-start;gap:8px;line-height:1.6;}
+.feat-bullet{flex-shrink:0;margin-top:7px;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.5;}
+.desc-box{border-radius:10px;padding:18px 20px;background:rgba(255,255,255,.72);}
+.desc-label{font-size:11px;letter-spacing:2px;margin-bottom:6px;opacity:.65;}
+.desc-text{font-size:13px;line-height:1.95;}
+.secondary-section{margin-bottom:36px;}
+.sec-title{font-size:12px;color:var(--ink-muted);margin-bottom:12px;letter-spacing:1px;}
+.sec-card{display:flex;align-items:center;gap:12px;padding:13px 16px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;background:#fff;}
+.sec-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.sec-name{font-size:13px;font-weight:500;}
+.sec-note{font-size:12px;color:var(--ink-muted);margin-left:auto;}
+.cta-box{background:var(--ink);border-radius:14px;padding:34px 26px;text-align:center;color:var(--cream);margin-bottom:20px;}
+.cta-eyebrow{font-size:10px;letter-spacing:3px;opacity:.45;margin-bottom:10px;}
+.cta-title{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:600;line-height:1.65;margin-bottom:8px;}
+.cta-sub{font-size:12px;opacity:.5;line-height:1.8;margin-bottom:22px;}
+.btn-cta{background:var(--cream);color:var(--ink);border:none;padding:14px 40px;font-size:14px;font-family:'Noto Sans JP',sans-serif;font-weight:700;border-radius:4px;cursor:pointer;letter-spacing:1px;}
+.btn-retry{display:block;margin:14px auto 0;background:transparent;border:none;color:rgba(255,255,255,.4);font-size:12px;cursor:pointer;text-decoration:underline;font-family:'Noto Sans JP',sans-serif;}
+.footer{text-align:center;font-size:11px;color:var(--ink-muted);margin-top:32px;}
+
+/* TYPE DETAIL */
+#detail{display:none;max-width:640px;margin:0 auto;padding:40px 24px 80px;}
+.detail-header{text-align:center;margin-bottom:30px;}
+.detail-lead{font-size:13px;color:var(--ink-light);line-height:2;margin-top:12px;}
+.detail-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:28px 24px;margin-bottom:22px;}
+.detail-label{font-size:11px;letter-spacing:2px;margin-bottom:8px;font-weight:600;}
+.detail-heading{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:600;line-height:1.7;margin-bottom:18px;}
+.risk-list{display:flex;flex-direction:column;gap:12px;}
+.risk-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.8;color:var(--ink-light);}
+.risk-mark{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:11px;font-weight:700;}
+.action-list{display:flex;flex-direction:column;gap:14px;}
+.action-item{display:flex;align-items:flex-start;gap:13px;padding:15px;border-radius:10px;}
+.action-no{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;font-size:12px;font-weight:700;}
+.action-text{font-size:13px;line-height:1.8;padding-top:1px;}
+.consult-box{background:var(--ink);border-radius:14px;padding:32px 25px;text-align:center;color:var(--cream);margin-bottom:20px;}
+.consult-title{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:600;line-height:1.75;margin-bottom:14px;}
+.consult-text{font-size:12px;line-height:2;opacity:.72;margin-bottom:22px;}
+.btn-consult{display:inline-block;background:var(--cream);color:var(--ink);border:none;padding:14px 28px;font-size:14px;font-family:'Noto Sans JP',sans-serif;font-weight:700;border-radius:4px;cursor:pointer;letter-spacing:.5px;text-decoration:none;}
+.btn-detail-back{display:block;margin:18px auto 0;background:transparent;border:none;color:var(--ink-muted);font-size:12px;cursor:pointer;text-decoration:underline;font-family:'Noto Sans JP',sans-serif;}
+
+@media(max-width:480px){
+  .type-grid{grid-template-columns:1fr;}
+  .q-text{font-size:17px;}
+  .type-name{font-size:22px;}
+}
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="chip">SELF DIAGNOSIS</div>
+  <h1 class="intro-title">頑張っているのに<br>満たされない本当の理由診断</h1>
+  <p class="intro-sub">
+    頑張っているのに満たされない。<br>
+    たくさん学んできたのに、毎日が変わらない。<br>
+    氣づくと、自分のことはいつも後回し。<br><br>
+    その理由は、感情・思考・自己価値・選択・人生<br>
+    5つの層のどこかで、自分の氣持ちを置いてきてしまったから。<br><br>
+    25問の診断で、今のあなたが止まりやすい場所を見つけましょう。<br>
+    あなたを決めつけるための診断ではありません。<br>
+    思いうかんだまま、氣軽に答えてくださいね。
+  </p>
+  <div class="type-grid">
+    <div class="type-chip" style="background:var(--c1-bg);color:var(--c1)"><span style="background:var(--c1)"></span>感情ストップ型</div>
+    <div class="type-chip" style="background:var(--c2-bg);color:var(--c2)"><span style="background:var(--c2)"></span>他人軸思考型</div>
+    <div class="type-chip" style="background:var(--c3-bg);color:var(--c3)"><span style="background:var(--c3)"></span>自己価値欠乏型</div>
+    <div class="type-chip" style="background:var(--c4-bg);color:var(--c4)"><span style="background:var(--c4)"></span>選択麻痺型</div>
+    <div class="type-chip" style="background:var(--c5-bg);color:var(--c5)"><span style="background:var(--c5)"></span>人生主導権喪失型</div>
+  </div>
+  <button class="btn-start" onclick="startQuiz()">診断をはじめる</button>
+  <p class="note">全25問 ／ 所要時間：約3〜5分</p>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz">
+  <div class="prog-info">
+    <span id="prog-layer"></span>
+    <span id="prog-count"></span>
+  </div>
+  <div class="prog-bg"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  <div id="badge-wrap"></div>
+  <div class="q-no" id="q-no"></div>
+  <div class="q-text" id="q-text"></div>
+  <div class="scale-wrap" id="scale-wrap"></div>
+  <div class="nav">
+    <button class="btn-back" id="btn-back" onclick="prevQ()">← 戻る</button>
+    <button class="btn-next" id="btn-next" onclick="nextQ()" disabled>次へ →</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result"></div>
+
+<!-- TYPE DETAIL -->
+<div id="detail"></div>
+
+<script>
+const LAYERS = [
+  {
+    id:1, key:'emotion', name:'感情', en:'Emotion Stop',
+    color:'#D85A30', bg:'#FEF3EE',
+    qs:[
+      'まわりの人の氣持ちはすぐ分かるのに、自分が本当はどうしたいのかは分からないことがある',
+      '感情を感じる前に「大丈夫」と自分に言い聞かせてしまう',
+      'モヤモヤや違和感があっても、そのまま流してしまう',
+      '氣持ちを言葉にしようとすると、うまく出てこない',
+      '怒りや悲しみがわいたとき、感じる前に「こんなふうに思っちゃダメ」と打ち消してしまう'
+    ]
+  },
+  {
+    id:2, key:'thinking', name:'思考', en:'Other-Axis Thinking',
+    color:'#BA7517', bg:'#FFFBF0',
+    qs:[
+      '家族やまわりの期待に応えないと、大切にされない氣がする',
+      '「こうしなければならない」という考えに縛られていると感じる',
+      'SNSで人の活躍を見ると、自分と比べてしまう',
+      '相手の機嫌が悪いと「わたしが何かしたかな」と考えてしまう',
+      '人にどう思われるかが氣になって、本音を出しにくい'
+    ]
+  },
+  {
+    id:3, key:'selfvalue', name:'自己価値', en:'Self Value Loss',
+    color:'#1D9E75', bg:'#EDFAF4',
+    qs:[
+      '頑張っていない自分には、価値がないように感じる',
+      '誰かの役に立っていないと、ここにいていいのか落ち着かない',
+      '休んでいると、なまけているような氣がして落ち着かない',
+      '褒められても素直に受け取れず、否定したくなる',
+      '自分のためだけに時間やお金を使うことに、罪悪感がある'
+    ]
+  },
+  {
+    id:4, key:'choice', name:'選択', en:'Choice Paralysis',
+    color:'#7F77DD', bg:'#F2F1FE',
+    qs:[
+      '大切なことを、最後は誰かに決めてほしくなる',
+      '自分で決めたあと「これでよかったのか」と何度も不安になる',
+      '失敗が怖くて、なかなか一歩を踏み出せないことがある',
+      '学んだり調べたりするほど、どれが正しいか分からなくなって決められない',
+      '自分のための小さなこと（ランチ・休み・予定）でも、なかなか決められない'
+    ]
+  },
+  {
+    id:5, key:'life', name:'人生', en:'Life Control Loss',
+    color:'#378ADD', bg:'#EEF5FD',
+    qs:[
+      '今の毎日は、自分で選んだというより、流れでこうなった氣がする',
+      '人生は動いているのに「自分の人生じゃない」と感じることがある',
+      '役割（妻・母・娘・仕事）をはずした自分が、どんな人か分からない',
+      '変わりたいと思い続けているのに、何年も同じ場所にいる氣がする',
+      'やりたいことがあっても「いつか落ちついたら」と先のばしにしている'
+    ]
+  }
+];
+
+const SCALE = [
+  {label:'まったくない', score:0},
+  {label:'ほとんどない', score:1},
+  {label:'ときどきある', score:2},
+  {label:'よくある',     score:3},
+  {label:'いつもある',   score:4}
+];
+
+const TYPES = {
+  emotion:{
+    name:'感情ストップ型',
+    color:'#D85A30', bg:'#FEF3EE',
+    features:[
+      'まわりの氣持ちは分かるのに、自分の本音が分からない',
+      '「別に大丈夫」が口癖になっている',
+      'モヤモヤの原因がつかめないまま日々が過ぎていく',
+      '本音が分からないので、人生の方向性も曖昧になっている'
+    ],
+    desc:'あなたが人生の主導権を失っている出発点は「感情」にあります。感情を感じることを無意識に止めているため、本音が分からなくなっています。本音が分からないと、自分の基準で判断できず、外側に正解を求めるようになります。まず感情を「感じてもいい」と自分に許可することが、すべての変化の入り口です。',
+    risks:[
+      '「大丈夫」と氣持ちを飲み込むことが増え、本当の望みがさらに分かりにくくなる',
+      '自分の基準で選べないため、まわりの期待や正解に合わせやすくなる',
+      '小さなモヤモヤが積み重なり、理由の分からない満たされなさが続きやすくなる'
+    ],
+    actions:[
+      '一日一回、手を止めて「今のわたし、どんな氣持ち？」と自分に聞く',
+      '「大丈夫」と言いそうになったら、心の中で「本当は、ちょっと疲れてる」と言いかえてみる',
+      'モヤモヤしたら、理由が分からなくてもイイので「モヤモヤしてる」と一行だけ書く'
+    ]
+  },
+  thinking:{
+    name:'他人軸思考型',
+    color:'#BA7517', bg:'#FFFBF0',
+    features:[
+      '氣づくと、家族やまわりの期待を優先している',
+      '「こうしなければ」という思いこみに縛られている',
+      'SNSやまわりの人と比べてしまう',
+      '本音はあるのに、それを信じられない'
+    ],
+    desc:'あなたの主導権は「思考」の層で手放されています。感情は感じていても、「人にどう思われるか」「正解は何か」という他人軸の思考が行動にブレーキをかけています。この無意識の人生ルールを書き換えることで、自分の軸で生きることが始まります。',
+    risks:[
+      '正解を探すほど自分の感覚を信じにくくなり、決断に時間がかかる',
+      '人の期待を優先する選択が増え、やりたいことが後回しになっていく',
+      'うまくいかないたびに自分を責め、さらに自信を失いやすくなる'
+    ],
+    actions:[
+      '「しなければ」と思ったら「それ、誰が決めたの？」と一度だけ自分に聞いてみる',
+      'SNSで比べて落ちこんだら、そっと閉じて、今日のわたしができたことをひとつ思い出す',
+      'ランチのお店など小さなことをひとつ、人に確かめずに自分で決める'
+    ]
+  },
+  selfvalue:{
+    name:'自己価値欠乏型',
+    color:'#1D9E75', bg:'#EDFAF4',
+    features:[
+      '学びや努力を、ずっと続けてきた',
+      '本音もある程度分かっている',
+      'でも自信がなく「わたしなんて」と思ってしまう',
+      '頑張り続けているのに、どこかで認められていない感覚がある'
+    ],
+    desc:'あなたは感情も思考も理解しています。でも「ただ存在しているだけで価値がある」という感覚を、心の底から受け取れていません。だから頑張り続けても満たされない。この満たされなさの多くは、小さいころから身についた思いこみからきています。それはあなたのせいではありません。氣づいた今から、変えていけます。「いてくれるだけでいい」という感覚を自分に取り戻すことが、主導権を握り直す鍵です。',
+    risks:[
+      '役に立つことや成果で自分の価値を証明しようとし、頑張り続けてしまう',
+      '褒め言葉や好意を受け取れず、認められても満たされにくくなる',
+      '自分のために時間やお金を使う罪悪感が強まり、心の余裕を失いやすくなる'
+    ],
+    actions:[
+      '寝る前に「今日できたこと」を3つ書く（ごはんを作った、も立派なひとつ）',
+      '褒められたら「いえいえ」で返さず、「ありがとう、うれしい」と受け取ってみる',
+      '誰かの役に立つためではない、自分だけの時間を10分、予定に入れる（好きなお茶を飲むだけでもイイ）'
+    ]
+  },
+  choice:{
+    name:'選択麻痺型',
+    color:'#7F77DD', bg:'#F2F1FE',
+    features:[
+      '本音は分かる・自己価値も感じてきた',
+      'でも決断できない・行動できない',
+      '失敗や否定が怖くて動けなくなる',
+      '大切なことほど誰かに決めてもらいたくなる'
+    ],
+    desc:'あなたの問題は知識でも意志でもなく、「選択」です。自分で決めることへの怖れが、主導権を手放させています。失敗が怖い、嫌われたくない、間違えたくない——その感覚の奥には、まだ自分を信頼しきれていない部分があります。小さな選択から自分で決める練習を重ねることで、人生の主導権が戻ってきます。',
+    risks:[
+      '大切な決断ほど先延ばしになり、やりたいことが形にならないまま時間が過ぎる',
+      '安心するために学びや情報を増やしても、行動にはつながりにくくなる',
+      '人に決めてもらうことが増え、自分を信頼する感覚がさらに弱くなる'
+    ],
+    actions:[
+      '「今日のおやつ」「着る服」など、迷っても困らないことを30秒で自分で決める',
+      '学びや調べものは、先に「ここまで知ったら決める」と決めてから始める',
+      '迷ったときは「正しい方」より「わたしが少しうれしい方」を選んでみる'
+    ]
+  },
+  life:{
+    name:'人生主導権喪失型',
+    color:'#378ADD', bg:'#EEF5FD',
+    features:[
+      '自己啓発やスピリチュアルを、真面目に学んできた',
+      '変わろうと何度もチャレンジしてきた',
+      'でも毎日は変わらず、満たされない感覚がずっとある',
+      '「これが本当にわたしの人生なのかな」という思いが消えない'
+    ],
+    desc:'人生全体で主導権を失っている状態です。感情・思考・自己価値・選択、すべての層で積み重なってきた手放しが、今の「満たされない人生」につながっています。あなたに必要なのは新しいノウハウではありません。根っこから5つの層を順番に解放し、本来の自分を取り戻すことです。',
+    risks:[
+      '新しいことを学んでも現実が動かず「また変われなかった」と感じやすくなる',
+      '役割や「やらなければ」が増え、自分のために生きる時間が少なくなる',
+      '「これが私の人生なのかな」という感覚が強まり、望むことを諦めやすくなる'
+    ],
+    actions:[
+      '毎日していることから「やめたいこと・減らしたいこと」を3つ書き出す（なくても困らない頑張りもふくめて）',
+      '「いつか落ちついたら」と思っていることをひとつ書き出して、今週5分だけやってみる',
+      '週に15分だけ「わたしは、これからどう生きたい？」を考える時間を予定に入れる'
+    ]
+  }
+};
+
+const LAYER_KEYS = ['emotion','thinking','selfvalue','choice','life'];
+let answers = Array.from({length:5},()=>Array(5).fill(null));
+let curLayer=0, curQ=0;
+
+function globalIdx(){ return curLayer*5+curQ; }
+
+function startQuiz(){
+  document.getElementById('intro').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  renderQ();
+}
+
+function renderQ(){
+  const layer=LAYERS[curLayer];
+  const ans=answers[curLayer][curQ];
+  const gi=globalIdx();
+
+  document.getElementById('prog-fill').style.width=Math.round(gi/25*100)+'%';
+  document.getElementById('prog-layer').textContent=`第${layer.id}層：${layer.name}`;
+  document.getElementById('prog-count').textContent=`${gi+1} / 25`;
+
+  document.getElementById('badge-wrap').innerHTML=
+    `<div class="layer-badge" style="background:${layer.bg};color:${layer.color}">
+       <div class="layer-dot" style="background:${layer.color}">${layer.id}</div>
+       ${layer.name}の層
+     </div>`;
+
+  document.getElementById('q-no').textContent=`Q${curQ+1}`;
+  document.getElementById('q-text').textContent=layer.qs[curQ];
+
+  const wrap=document.getElementById('scale-wrap');
+  wrap.innerHTML='';
+  SCALE.forEach(s=>{
+    const d=document.createElement('div');
+    d.className='opt'+(ans===s.score?' sel':'');
+    d.innerHTML=`<div class="opt-dot"></div><span class="opt-lbl">${s.label}</span><span class="opt-score">${s.score}</span>`;
+    d.onclick=()=>{ answers[curLayer][curQ]=s.score; renderQ(); };
+    wrap.appendChild(d);
+  });
+
+  document.getElementById('btn-back').style.visibility=gi===0?'hidden':'visible';
+  const nxt=document.getElementById('btn-next');
+  nxt.disabled=ans===null;
+  nxt.textContent=gi===24?'結果を見る →':'次へ →';
+}
+
+function prevQ(){
+  if(globalIdx()===0) return;
+  if(curQ>0) curQ--;
+  else{ curLayer--; curQ=4; }
+  renderQ();
+}
+
+function nextQ(){
+  if(answers[curLayer][curQ]===null) return;
+  if(globalIdx()===24){ showResult(); return; }
+  if(curQ<4) curQ++;
+  else{ curLayer++; curQ=0; }
+  renderQ();
+}
+
+function showResult(){
+  document.getElementById('quiz').style.display='none';
+  const el=document.getElementById('result');
+  el.style.display='block';
+
+  // 各層スコア（max=20、高いほど詰まっている）
+  const scores=answers.map(a=>a.reduce((s,v)=>s+(v||0),0));
+
+  // メインタイプ：最高スコア層
+  let maxScore=-1, maxIdx=0;
+  scores.forEach((s,i)=>{ if(s>maxScore){maxScore=s;maxIdx=i;} });
+  const mainKey=LAYER_KEYS[maxIdx];
+  const mainType=TYPES[mainKey];
+  const mainLayer=LAYERS[maxIdx];
+
+  // 同じ点数のタイプ（メイン以外）
+  const tied=scores.map((s,i)=>({s,i})).filter(o=>o.i!==maxIdx&&o.s===maxScore);
+  const tieHTML=tied.length?`
+      <div class="desc-box" style="margin-top:14px">
+        <div class="desc-label" style="color:${mainType.color}">同じ点数のタイプ</div>
+        <div class="desc-text">${tied.map(o=>TYPES[LAYER_KEYS[o.i]].name).join('・')}も、同じ${maxScore}点でした。どちらも今のあなたに近いタイプです。読んでみて「こっちかも」と感じる方を大切にしてくださいね。</div>
+      </div>`:'';
+
+  // セカンダリ：次に高い2層
+  const others=scores
+    .map((s,i)=>({s,i}))
+    .filter(o=>o.i!==maxIdx)
+    .sort((a,b)=>b.s-a.s)
+    .slice(0,2);
+
+  // スコアバー
+  const barsHTML=LAYERS.map((l,i)=>{
+    const pct=Math.round(scores[i]/20*100);
+    const isMain=i===maxIdx;
+    return `
+      <div class="score-row">
+        <div class="score-name">${l.name}</div>
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" style="width:0%;background:${l.color}" data-pct="${pct}"></div>
+        </div>
+        <div class="score-val" style="color:${l.color}">${scores[i]}点${isMain?' ◀':''}</div>
+      </div>`;
+  }).join('');
+
+  const featHTML=mainType.features.map(f=>
+    `<div class="feat-item"><div class="feat-bullet"></div>${f}</div>`
+  ).join('');
+
+  const secHTML=others.map(o=>{
+    const l=LAYERS[o.i];
+    const t=TYPES[LAYER_KEYS[o.i]];
+    return `
+      <div class="sec-card">
+        <div class="sec-dot" style="background:${l.color}"></div>
+        <div class="sec-name">${t.name}</div>
+        <div class="sec-note">${o.s}点 / 20点</div>
+      </div>`;
+  }).join('');
+
+  el.innerHTML=`
+    <div class="res-header">
+      <div class="chip">RESULT</div>
+      <div class="res-title">あなたの診断結果</div>
+      <div class="res-sub">頑張っているのに満たされない本当の理由が分かりました</div>
+    </div>
+
+    <div class="score-section">${barsHTML}</div>
+
+    <div class="type-card" style="background:${mainType.bg};border:2px solid ${mainType.color}33">
+      <div class="type-eyebrow" style="color:${mainType.color}">あなたのタイプ</div>
+      <div class="type-name" style="color:${mainType.color}">${mainType.name}</div>
+      <div class="type-eng" style="color:${mainType.color}">${mainLayer.en} Pattern</div>
+      <div class="type-features">
+        <h4 style="color:${mainType.color}">特　徴</h4>
+        <div class="feat-list" style="color:${mainType.color}">${featHTML}</div>
+      </div>
+      <div class="desc-box">
+        <div class="desc-label" style="color:${mainType.color}">解　説</div>
+        <div class="desc-text">${mainType.desc}</div>
+      </div>${tieHTML}
+    </div>
+
+    <div class="secondary-section">
+      <div class="sec-title">▼ 次に主導権を失っている層</div>
+      ${secHTML}
+    </div>
+
+    <div class="cta-box">
+      <div class="cta-eyebrow">NEXT STEP</div>
+      <div class="cta-title">診断結果を<br>このままで終わらせたくない方へ</div>
+      <div class="cta-sub">今のままだと<br>どんなことが起こりやすいのか<br><br>人生の主導権を取り戻すために<br>今すぐできる3つのことをお伝えします</div>
+      <button class="btn-cta" onclick="showDetail('${mainKey}')">今すぐできる3つのことを見る</button>
+      <button class="btn-retry" onclick="retryQuiz()">もう一度診断する</button>
+    </div>
+
+    <div class="footer">本来の道を照らす預言師　@TOMOKO_INORI</div>
+  `;
+
+  setTimeout(()=>{
+    el.querySelectorAll('.score-bar-fill').forEach(b=>{ b.style.width=b.dataset.pct+'%'; });
+  },120);
+}
+
+function showDetail(typeKey){
+  const type=TYPES[typeKey];
+  const el=document.getElementById('detail');
+  const riskHTML=type.risks.map((item,i)=>`
+    <div class="risk-item">
+      <div class="risk-mark" style="background:${type.bg};color:${type.color}">${i+1}</div>
+      <div>${item}</div>
+    </div>`).join('');
+  const actionHTML=type.actions.map((item,i)=>`
+    <div class="action-item" style="background:${type.bg}">
+      <div class="action-no" style="background:${type.color}">${i+1}</div>
+      <div class="action-text">${item}</div>
+    </div>`).join('');
+
+  document.getElementById('result').style.display='none';
+  el.style.display='block';
+  el.innerHTML=`
+    <div class="detail-header">
+      <div class="chip">TYPE GUIDE</div>
+      <div class="res-title" style="color:${type.color}">${type.name}のあなたへ</div>
+      <div class="detail-lead">診断結果は あなたを決めつけるものでも<br>責めるものでもありません<br>今の状態に氣づき これからを選び直すための入口です</div>
+    </div>
+
+    <div class="detail-card">
+      <div class="detail-label" style="color:${type.color}">今のままだと</div>
+      <div class="detail-heading">起こりやすい3つのこと</div>
+      <div class="risk-list">${riskHTML}</div>
+    </div>
+
+    <div class="detail-card">
+      <div class="detail-label" style="color:${type.color}">TODAY'S ACTION</div>
+      <div class="detail-heading">今すぐできる3つのこと</div>
+      <div class="action-list">${actionHTML}</div>
+    </div>
+
+    <div class="consult-box">
+      <div class="cta-eyebrow">PERSONAL SESSION</div>
+      <div class="consult-title">自分の場合を<br>もっと深く知りたい方へ</div>
+      <div class="consult-text">3つのことを試してみても<br>何が一番の原因なのか分からない<br>一人では同じパターンを繰り返してしまいそう<br><br>そんな方は 個別相談セッションで<br>一緒に整理してみませんか<br><br>メインタイプと次に高かった2つの層をもとに<br>頑張っているのに満たされなかった本当の理由と<br>今のあなたに必要な一歩を丁寧に読み解きます</div>
+      <a class="btn-consult" href="https://line.me/R/oaMessage/%40277jgbbj/?%E5%80%8B%E5%88%A5%E7%9B%B8%E8%AB%87">私に必要な一歩を見つける</a>
+      <div class="consult-text" style="margin:14px 0 0">LINEのトーク画面に「個別相談」と入ります<br>そのまま送ると、お申し込みのご案内が届きます</div>
+    </div>
+
+    <button class="btn-detail-back" onclick="backToResult()">診断結果に戻る</button>
+    <div class="footer">本来の道を照らす預言師　@TOMOKO_INORI</div>
+  `;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function backToResult(){
+  document.getElementById('detail').style.display='none';
+  document.getElementById('result').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function retryQuiz(){
+  answers=Array.from({length:5},()=>Array(5).fill(null));
+  curLayer=0; curQ=0;
+  document.getElementById('result').style.display='none';
+  document.getElementById('detail').style.display='none';
+  document.getElementById('intro').style.display='block';
+}
+</script>
+</body>
+</html>
